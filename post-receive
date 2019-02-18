@@ -1,0 +1,31 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+REPO_DIR=$(pwd)
+
+QMAKE=/usr/bin/qmake
+QMAKE_OPTIONS=""
+
+SETTINGS=build-qt-project
+SETTINGS_FILE=/etc/default/$SETTINGS
+SETTINGS_OVERRIDES_FILE=$SCRIPT_DIR/../$SETTINGS
+
+if [ -f $SETTINGS_FILE ]; then
+    source $SETTINGS_FILE
+fi
+if [ -f $SETTINGS_OVERRIDES_FILE ]; then
+    source $SETTINGS_OVERRIDES_FILE
+fi
+
+NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+TMP_PROJECT_DIR=/tmp/$NEW_UUID
+
+if [ -d $TMP_PROJECT_DIR ]; then
+    rm -rf $TMP_PROJECT_DIR
+fi
+
+mkdir $TMP_PROJECT_DIR
+cd $TMP_PROJECT_DIR
+
+eval $QMAKE $REPO_DIR $QMAKE_OPTIONS
+exit $?
