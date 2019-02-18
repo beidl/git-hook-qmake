@@ -28,4 +28,19 @@ mkdir $TMP_PROJECT_DIR
 cd $TMP_PROJECT_DIR
 
 eval $QMAKE $REPO_DIR $QMAKE_OPTIONS
-exit $?
+QMAKE_EXIT_CODE="$?"
+
+if [ "$QMAKE_EXIT_CODE" != "0" ]; then
+    echo "qmake failed"
+    exit $QMAKE_EXIT_CODE
+fi
+
+make -j$(nproc)
+MAKE_EXIT_CODE="$?"
+
+if [ "$MAKE_EXIT_CODE" != "0" ]; then
+    echo "make failed"
+    exit $MAKE_EXIT_CODE
+fi
+
+exit 0
