@@ -32,7 +32,6 @@ cd $BUILD_DIR
 
 eval $QMAKE $REPO_DIR $QMAKE_OPTIONS
 QMAKE_EXIT_CODE="$?"
-
 if [ "$QMAKE_EXIT_CODE" != "0" ]; then
     echo "qmake failed"
     exit $QMAKE_EXIT_CODE
@@ -40,10 +39,17 @@ fi
 
 eval $MAKE $MAKE_OPTIONS
 MAKE_EXIT_CODE="$?"
-
 if [ "$MAKE_EXIT_CODE" != "0" ]; then
     echo "make failed"
     exit $MAKE_EXIT_CODE
+fi
+
+make uninstall
+make install
+MAKE_INSTALL_EXIT_CODE="$?"
+if [ "$MAKE_INSTALL_EXIT_CODE" != "0" ]; then
+    echo "make install failed"
+    exit $MAKE_INSTALL_EXIT_CODE
 fi
 
 exit 0
